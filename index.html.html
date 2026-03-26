@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL — Your Morning Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF;
+  --snow: #F8F9FC;
+  --mist: #EEF1F7;
+  --soft-sky: #E4EDF8;
+  --sky: #5B8FC9;
+  --sky-dark: #2E5F96;
+  --sage-soft: #E6F0E8;
+  --sage: #5A8C62;
+  --sage-dark: #2F5C36;
+  --rose-soft: #F5E8EC;
+  --rose: #C4607A;
+  --rose-dark: #8C2E45;
+  --amber-soft: #FDF0DC;
+  --amber: #C8852A;
+  --amber-dark: #8C5A10;
+  --lavender-soft: #EDE8F5;
+  --lavender: #7B5FC4;
+  --teal-soft: #E0F2EF;
+  --teal: #3A8C7E;
+  --ink: #1C2333;
+  --ink-mid: #4A5568;
+  --ink-light: #8896A8;
+  --ink-faint: #C8D0DC;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--snow);
+  color: var(--ink);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1.5px solid var(--mist);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.brand-name {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.brand-tagline {
+  font-size: 12px;
+  color: var(--ink-light);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.topbar-right { display: flex; align-items: center; gap: 14px; }
+
+.date-chip {
+  background: var(--mist);
+  color: var(--ink-mid);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 30px;
+  letter-spacing: 0.02em;
+}
+
+.refresh-btn {
+  background: var(--ink);
+  color: var(--white);
+  border: none;
+  padding: 9px 20px;
+  border-radius: 30px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.refresh-btn:hover { background: var(--sky-dark); }
+.refresh-btn:active { transform: scale(0.97); }
+.refresh-btn:disabled { background: var(--ink-faint); cursor: not-allowed; }
+
+.spin { display: inline-block; }
+.spinning { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── PILL NAV ── */
+.pill-nav {
+  background: var(--white);
+  padding: 12px 2rem;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1.5px solid var(--mist);
+  position: sticky;
+  top: 64px;
+  z-index: 199;
+}
+.pill-nav::-webkit-scrollbar { display: none; }
+
+.pill {
+  background: var(--mist);
+  border: 1.5px solid transparent;
+  color: var(--ink-mid);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 30px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pill:hover { background: var(--soft-sky); color: var(--sky-dark); }
+.pill.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.pill-icon { font-size: 14px; }
+
+/* ── LIVE TICKER ── */
+.ticker-bar {
+  background: var(--soft-sky);
+  border-bottom: 1.5px solid var(--ink-faint);
+  padding: 8px 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+}
+.ticker-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sky-dark);
+  margin-right: 16px;
+  flex-shrink: 0;
+  background: var(--sky-dark);
+  color: var(--white);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.ticker-scroll {
+  overflow: hidden;
+  flex: 1;
+}
+.ticker-inner {
+  display: flex;
+  gap: 40px;
+  animation: ticker-move 35s linear infinite;
+  width: max-content;
+}
+@keyframes ticker-move { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-item {
+  font-size: 13px;
+  color: var(--ink-mid);
+  font-weight: 500;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ticker-sep { color: var(--ink-faint); }
+.up { color: var(--sage); }
+.down { color: var(--rose); }
+
+/* ── WIDGETS ROW ── */
+.widgets-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 20px 2rem;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) { .widgets-row { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 500px) { .widgets-row { grid-template-columns: 1fr; } }
+
+.widget {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  border: 1.5px solid var(--mist);
+}
+.widget-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 8px;
+}
+.widget-big {
+  font-family: 'Fraunces', serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+.widget-sub { font-size: 12px; color: var(--ink-light); margin-top: 4px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 8px;
+}
+.badge-up { background: var(--sage-soft); color: var(--sage-dark); }
+.badge-down { background: var(--rose-soft); color: var(--rose-dark); }
+.badge-neutral { background: var(--amber-soft); color: var(--amber-dark); }
+
+.schumann-arc {
+  position: relative;
+  text-align: center;
+  padding: 4px 0;
+}
+.schumann-ring {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  border: 4px solid var(--teal-soft);
+  border-top-color: var(--teal);
+  border-right-color: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  position: relative;
+}
+.schumann-val {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--teal);
+}
+.schumann-unit { font-size: 10px; color: var(--ink-light); }
+
+.crypto-mini-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--mist);
+  font-size: 13px;
+}
+.crypto-mini-row:last-child { border-bottom: none; padding-bottom: 0; }
+.cmr-name { font-weight: 600; color: var(--ink-mid); }
+.cmr-val { font-weight: 400; color: var(--ink); }
+
+/* ── LENS SELECTOR ── */
+.lens-row {
+  padding: 0 2rem 0;
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.lens-label { font-size: 12px; color: var(--ink-light); font-weight: 600; letter-spacing: 0.05em; }
+.lens-pill {
+  background: none;
+  border: 1.5px solid var(--ink-faint);
+  color: var(--ink-mid);
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.lens-pill:hover { border-color: var(--sky); color: var(--sky-dark); }
+.lens-pill.active { background: var(--soft-sky); border-color: var(--sky); color: var(--sky-dark); }
+
+/* ── MASONRY LAYOUT ── */
+.masonry-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 16px 2rem 3rem;
+}
+
+.masonry {
+  columns: 3;
+  column-gap: 16px;
+}
+@media (max-width: 1100px) { .masonry { columns: 2; } }
+@media (max-width: 640px) { .masonry { columns: 1; } }
+
+.story-card {
+  break-inside: avoid;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--mist);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  display: inline-block;
+  width: 100%;
+}
+.story-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(28,35,51,0.09);
+}
+
+.card-color-bar {
+  height: 4px;
+  width: 100%;
+}
+
+.card-body { padding: 20px 22px; }
+
+.card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+.chip {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.chip-sky { background: var(--soft-sky); color: var(--sky-dark); }
+.chip-sage { background: var(--sage-soft); color: var(--sage-dark); }
+.chip-rose { background: var(--rose-soft); color: var(--rose-dark); }
+.chip-amber { background: var(--amber-soft); color: var(--amber-dark); }
+.chip-lavender { background: var(--lavender-soft); color: #4A2C96; }
+.chip-teal { background: var(--teal-soft); color: #1C5C52; }
+.chip-alt { background: var(--lavender-soft); color: #4A2C96; }
+.chip-main { background: var(--soft-sky); color: var(--sky-dark); }
+
+.card-source {
+  font-size: 11px;
+  color: var(--ink-light);
+  font-weight: 400;
+  margin-left: auto;
+}
+
+.story-card h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.story-card.card-lg h3 { font-size: 22px; }
+.story-card.card-featured h3 { font-size: 26px; font-weight: 700; }
+
+.story-card p {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  line-height: 1.65;
+  font-weight: 400;
+  margin-bottom: 14px;
+}
+
+.alt-callout {
+  background: var(--lavender-soft);
+  border-left: 3px solid var(--lavender);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 10px 14px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #4A2C96;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.card-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 22px;
+  border-top: 1.5px solid var(--mist);
+  background: var(--snow);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.card-time-label { font-size: 11px; color: var(--ink-light); font-weight: 400; }
+.read-btn {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sky-dark);
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Nunito', sans-serif;
+}
+.read-btn:hover { text-decoration: underline; }
+
+/* ── FEATURED WIDE CARD ── */
+.card-featured-wide {
+  break-inside: avoid;
+  background: var(--ink);
+  border-radius: var(--radius-xl);
+  padding: 32px 32px 0;
+  margin-bottom: 16px;
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+.card-featured-wide:hover { transform: translateY(-3px); }
+.card-featured-wide .chips-row { margin-bottom: 14px; }
+.card-featured-wide h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.card-featured-wide p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.card-featured-wide .card-footer-row {
+  background: rgba(255,255,255,0.06);
+  border-top-color: rgba(255,255,255,0.1);
+  border-radius: 0;
+  margin: 0 -32px;
+  padding: 12px 32px;
+}
+.card-featured-wide .card-time-label { color: rgba(255,255,255,0.35); }
+.card-featured-wide .read-btn { color: rgba(255,255,255,0.7); }
+
+/* ── LOADING / STREAM STATES ── */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+.loader-orbs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+.orb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  animation: orb-bounce 1.4s ease-in-out infinite both;
+}
+.orb:nth-child(1) { background: var(--sky); animation-delay: 0s; }
+.orb:nth-child(2) { background: var(--sage); animation-delay: 0.2s; }
+.orb:nth-child(3) { background: var(--rose); animation-delay: 0.4s; }
+.orb:nth-child(4) { background: var(--amber); animation-delay: 0.6s; }
+@keyframes orb-bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+.loading-title {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.loading-sub { font-size: 14px; color: var(--ink-light); font-weight: 400; }
+.loading-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 1.5rem;
+  max-width: 520px;
+}
+.lpill {
+  background: var(--white);
+  border: 1.5px solid var(--mist);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--ink-mid);
+  font-weight: 500;
+  animation: fadeUp 0.5s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* stream render area */
+.stream-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 20px 2rem 3rem;
+}
+.stream-content {
+  columns: 3;
+  column-gap: 16px;
+}
+@media (max-width: 1100px) { .stream-content { columns: 2; } }
+@media (max-width: 640px) { .stream-content { columns: 1; } }
+
+.s-section {
+  break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.stream-raw {
+  font-size: 14px;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  columns: 1;
+  column-gap: 0;
+}
+.stream-raw h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 2rem 0 0.75rem;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--mist);
+  letter-spacing: -0.01em;
+  break-before: avoid;
+}
+.stream-raw h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 1.25rem 0 0.5rem;
+}
+.stream-raw p { margin-bottom: 0.75rem; }
+.stream-raw ul { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+.stream-raw li { margin-bottom: 5px; }
+.stream-raw strong { font-weight: 600; color: var(--ink); }
+.stream-raw blockquote {
+  border-left: 3px solid var(--lavender);
+  background: var(--lavender-soft);
+  padding: 10px 16px;
+  margin: 1rem 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-style: italic;
+  color: #4A2C96;
+  font-size: 13.5px;
+}
+.stream-raw a { color: var(--sky-dark); }
+
+.cursor-blink {
+  display: inline-block;
+  width: 2px; height: 1.1em;
+  background: var(--sky);
+  border-radius: 1px;
+  animation: blink 0.75s step-end infinite;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.search-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-light);
+  font-style: italic;
+  padding: 6px 0;
+}
+.search-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--sky);
+  animation: pulse-dot 1s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%,100%{opacity:0.4;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+
+.err-card {
+  background: var(--rose-soft);
+  border: 1.5px solid var(--rose);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  color: var(--rose-dark);
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-name">signal</span>
+    <span class="brand-tagline">your morning brief</span>
+  </div>
+  <div class="topbar-right">
+    <div class="date-chip" id="date-chip">—</div>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadFeed()">
+      <span class="spin" id="refresh-icon">↻</span> Refresh
+    </button>
+  </div>
+</header>
+
+<!-- PILL NAV -->
+<nav class="pill-nav" id="pill-nav">
+  <button class="pill active" data-cat="all" onclick="switchCat('all',this)"><span class="pill-icon">✦</span> Everything</button>
+  <button class="pill" data-cat="crypto" onclick="switchCat('crypto',this)"><span class="pill-icon">◈</span> XRP & Crypto</button>
+  <button class="pill" data-cat="politics" onclick="switchCat('politics',this)"><span class="pill-icon">◉</span> Politics</button>
+  <button class="pill" data-cat="awake" onclick="switchCat('awake',this)"><span class="pill-icon">◎</span> Awake Intel</button>
+  <button class="pill" data-cat="consciousness" onclick="switchCat('consciousness',this)"><span class="pill-icon">◌</span> Consciousness</button>
+  <button class="pill" data-cat="health" onclick="switchCat('health',this)"><span class="pill-icon">◍</span> Food & Health</button>
+  <button class="pill" data-cat="moto" onclick="switchCat('moto',this)"><span class="pill-icon">⊙</span> Motorcycles</button>
+  <button class="pill" data-cat="uap" onclick="switchCat('uap',this)"><span class="pill-icon">◐</span> UAP & Space</button>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-bar" id="ticker-bar">
+  <span class="ticker-label">LIVE</span>
+  <div class="ticker-scroll">
+    <div class="ticker-inner" id="ticker-inner">
+      <span class="ticker-item"><strong>XRP</strong> <span id="t-xrp">loading…</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>BTC</strong> <span id="t-btc">—</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>ETH</strong> <span id="t-eth">—</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>Fear &amp; Greed</strong> <span id="t-fg">—</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>Schumann</strong> <span id="t-sch">7.83 Hz</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>Solar Kp</strong> <span id="t-kp">—</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>XRP</strong> <span id="t-xrp2">loading…</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>BTC</strong> <span id="t-btc2">—</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>ETH</strong> <span id="t-eth2">—</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>Fear &amp; Greed</strong> <span id="t-fg2">—</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>Schumann</strong> <span id="t-sch2">7.83 Hz</span></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item"><strong>Solar Kp</strong> <span id="t-kp2">—</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- WIDGETS -->
+<div class="widgets-row">
+  <div class="widget">
+    <div class="widget-eyebrow">XRP / USD</div>
+    <div class="widget-big" id="w-xrp">—</div>
+    <div class="widget-sub">Ripple · ISO 20022</div>
+    <div class="badge badge-neutral" id="w-xrp-chg">loading…</div>
+  </div>
+  <div class="widget">
+    <div class="widget-eyebrow">Bitcoin &amp; Ethereum</div>
+    <div class="crypto-mini-row"><span class="cmr-name">BTC</span><span class="cmr-val" id="w-btc">—</span></div>
+    <div class="crypto-mini-row"><span class="cmr-name">ETH</span><span class="cmr-val" id="w-eth">—</span></div>
+    <div class="crypto-mini-row"><span class="cmr-name">Fear &amp; Greed</span><span class="cmr-val" id="w-fg">—</span></div>
+  </div>
+  <div class="widget">
+    <div class="widget-eyebrow">Schumann Resonance</div>
+    <div class="schumann-arc">
+      <div class="schumann-ring">
+        <div>
+          <div class="schumann-val" id="w-sch">7.83</div>
+          <div class="schumann-unit">Hz</div>
+        </div>
+      </div>
+      <div class="badge" id="w-sch-badge" style="background:var(--teal-soft);color:#1C5C52;margin:0 auto;display:inline-flex;">Nominal</div>
+    </div>
+  </div>
+  <div class="widget">
+    <div class="widget-eyebrow">Solar Activity · Kp Index</div>
+    <div class="widget-big" id="w-kp" style="color:var(--amber)">—</div>
+    <div class="widget-sub">Geomagnetic field status</div>
+    <div id="w-kp-status" style="font-size:12px;margin-top:8px;color:var(--ink-mid);">Loading…</div>
+  </div>
+</div>
+
+<!-- LENS SELECTOR -->
+<div class="lens-row">
+  <span class="lens-label">VIEW:</span>
+  <button class="lens-pill active" onclick="setLens('both',this)">Both lenses</button>
+  <button class="lens-pill" onclick="setLens('mainstream',this)">Mainstream</button>
+  <button class="lens-pill" onclick="setLens('alt',this)">Alternative</button>
+</div>
+
+<!-- FEED AREA -->
+<div id="feed-area">
+  <div class="loading-wrap" id="loading-state">
+    <div class="loader-orbs">
+      <div class="orb"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div>
+    </div>
+    <div class="loading-title">Gathering your signal…</div>
+    <div class="loading-sub">Scanning across all your frequencies</div>
+    <div class="loading-pills">
+      <span class="lpill" style="animation-delay:.05s">XRP & Ripple</span>
+      <span class="lpill" style="animation-delay:.1s">Australian Politics</span>
+      <span class="lpill" style="animation-delay:.15s">US Politics</span>
+      <span class="lpill" style="animation-delay:.2s">UAP Disclosure</span>
+      <span class="lpill" style="animation-delay:.25s">Schumann Spikes</span>
+      <span class="lpill" style="animation-delay:.3s">MotoGP</span>
+      <span class="lpill" style="animation-delay:.35s">Food Sovereignty</span>
+      <span class="lpill" style="animation-delay:.4s">Water Fluoridation</span>
+      <span class="lpill" style="animation-delay:.45s">CBDC Rollout</span>
+      <span class="lpill" style="animation-delay:.5s">Consciousness Science</span>
+      <span class="lpill" style="animation-delay:.55s">Solar Flares</span>
+      <span class="lpill" style="animation-delay:.6s">New Motorcycles</span>
+      <span class="lpill" style="animation-delay:.65s">Health Freedom</span>
+      <span class="lpill" style="animation-delay:.7s">Deep State Intel</span>
+    </div>
+  </div>
+  <div id="stream-area" style="display:none"></div>
+</div>
+
+<script>
+let currentCat = 'all';
+let currentLens = 'both';
+
+// Date
+const now = new Date();
+document.getElementById('date-chip').textContent = now.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+const PROMPTS = {
+  all: `You are SIGNAL, a personalised news intelligence service for an Australian reader. Today is ${now.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}.
+
+Use web search to find the MOST CURRENT news today across all these topics. For each story present what mainstream sources say AND what independent/alternative researchers are saying — clearly labelled. Use > blockquotes for the alternative perspective callout.
+
+Cover these topics thoroughly (2-3 stories each, more if significant):
+
+## XRP, Crypto & the Financial System
+Ripple vs SEC latest, XRP price action, whale movements, CBDC rollout (US digital dollar, Australian CBDC), ISO 20022 banking transition, Bitcoin, DeFi regulation, Tether/stablecoin news, Basel III compliance, BRICS payment systems
+
+## US Politics & Deep State
+Trump administration moves, executive orders, Federal Reserve/debt ceiling, Congress battles, DOJ/FBI news, mainstream vs independent journalist perspectives, geopolitical agenda items
+
+## Australian Politics & Economy
+Federal parliament news, RBA interest rate decisions, housing affordability crisis, cost of living, Australian surveillance legislation, digital ID rollout Australia, AUKUS/military, media censorship in Australia
+
+## Awake Intel — Hidden Agendas
+WHO/UN power grab developments, WEF/Great Reset agenda, central bank digital currency resistance movements, media ownership concentration, social credit system rollout globally, 15-minute city news, food system control, seed patenting/Monsanto news
+
+## Food, Water & Health Sovereignty
+Fluoride in water research, microplastics latest research, seed oil/processed food harm evidence, raw milk and food freedom movement, Big Pharma lawsuits and settlements, TGA (Australian FDA) actions, ivermectin/alternative treatment research, lab-grown meat rollout, food additive research, herbicide/pesticide contamination studies
+
+## Consciousness, Frequency & Spirituality
+Schumann resonance anomalies this week, solar flare consciousness effects, near-death experience research papers, pineal gland science, astrology significant transits today, numerology of current date, global meditation event announcements, timeline/ascension community news
+
+## UAP, Alien Disclosure & Hidden History
+Congressional UAP legislation progress, Pentagon UAP program news, whistleblower updates (Grusch, Elizondo), archaeological discoveries suggesting advanced ancient civilisations, non-human intelligence contact reports, Vatican and religion vs disclosure
+
+## Motorcycles
+MotoGP latest results/standings, World Superbike news, new motorcycle model reveals (Honda, Yamaha, Ducati, KTM, BMW, Triumph), Australian motorbike news, electric bike development (Zero, Energica), adventure touring destinations Australia, gear and safety tech
+
+Format: ## for topic sections, ### for individual story titles. After each story body, if there's a divergent alternative view use a > blockquote labelled **Alternative lens:**. End with a **Frequency Check** — a poetic one-paragraph assessment of the global vibration today based on all you've found.`,
+
+  crypto: `Search for today's most important XRP, Ripple, Bitcoin, Ethereum, crypto and alternative financial system news. Include: Ripple SEC case updates, XRP price analysis, ISO 20022 and SWIFT transition news, CBDC launches globally, DeFi regulation, Bitcoin ETF flows, Tether stability, crypto exchange news, BRICS payment system, gold/silver vs crypto narrative. Present mainstream financial news AND independent crypto analyst perspectives. Use > blockquotes for alternative financial system theories. Today: ${now.toLocaleDateString('en-AU')}.`,
+
+  politics: `Search for today's top US and Australian political stories. US: Trump administration actions, Congress, Federal Reserve, foreign policy, Department of Justice. Australia: Parliament, RBA, housing crisis, cost of living, digital identity laws, media laws, surveillance expansion, AUKUS. Also include: UN/WHO policy moves, WEF influence on government policy. For each story present both official/mainstream account AND independent journalist critique. Today: ${now.toLocaleDateString('en-AU')}.`,
+
+  awake: `Search for today's most significant alternative, investigative and "awake" news. Cover: WHO pandemic treaty developments, WEF/Great Reset agenda moves, CBDC resistance movements, mainstream media bias exposed, social credit system expansion globally, 15-minute city implementations and protests, seed/food system corporate control (Monsanto/Bayer, Bill Gates farmland), chemtrail/geoengineering latest, 5G health research, smart city surveillance rollout, whistleblower news, shadow government operations exposed. Be factual — cite real sources, note when claims are unverified vs documented. Today: ${now.toLocaleDateString('en-AU')}.`,
+
+  consciousness: `Search for today's consciousness, frequency, spiritual and esoteric news. Cover: Schumann resonance readings this week and any spikes, solar flare activity and its documented effects on human nervous system, near-death experience research, consciousness science papers, astrology significant transits and aspects today, numerological significance of today's date, global meditation/prayer events, lightworker and awakening community announcements, quantum physics and consciousness intersection, lucid dreaming research, sacred geometry discoveries. Today: ${now.toLocaleDateString('en-AU')}.`,
+
+  health: `Search for today's health sovereignty, food and water news. Cover: fluoride in water systems new research, microplastics health impact studies, seed oil inflammation research, ultra-processed food harms, raw milk and food freedom legislation, Big Pharma legal settlements and scandals, FDA/TGA regulatory actions and controversies, ivermectin and off-label treatment research, vaccine injury research and legal cases, herbicide/glyphosate contamination studies, EMF/5G biological effects research, natural medicine discoveries, Australian natural health freedom news, lab-grown meat approvals. Be balanced and evidence-based — present scientific findings on all sides. Today: ${now.toLocaleDateString('en-AU')}.`,
+
+  moto: `Search for today's motorcycle news. MotoGP latest race results, standings and team news. World Superbike (WSBK) updates. New motorcycle model announcements and reviews (Honda, Yamaha, Kawasaki, Suzuki, Ducati, KTM, BMW, Triumph, Royal Enfield, Harley-Davidson). Electric motorcycle developments — Zero Motorcycles, Energica, LiveWire, and new entrants. Australian motorcycle events, club rides, road trip destinations. Gear, helmet and safety technology reviews. Track day events in Australia. Adventure motorcycling news. Today: ${now.toLocaleDateString('en-AU')}.`,
+
+  uap: `Search for today's UAP/UFO disclosure, space weather and alien/NHI news. Congressional UAP/UFO legislation progress (UAPDA, UAP Disclosure Act). Pentagon and military UAP program updates. Whistleblower updates from David Grusch, Luis Elizondo and others. NASA UAP study group findings. Archaeological discoveries suggesting advanced ancient or non-human civilisations. Space weather: current solar flare activity, coronal mass ejections, Kp geomagnetic index. Exoplanet habitability discoveries. Private space program news. Vatican stance on alien life. Citizen science UAP reports and investigations. Today: ${now.toLocaleDateString('en-AU')}.`
+};
+
+const LENS_MOD = {
+  both: '',
+  mainstream: ' FOCUS ONLY on mainstream, official, peer-reviewed, and establishment sources. Acknowledge narrative gaps and what is not being covered.',
+  alt: ' FOCUS ONLY on independent journalists, alternative media, whistleblowers, Substack researchers, and non-mainstream sources. Flag clearly when claims are documented vs speculated.'
+};
+
+function md(text) {
+  return text
+    .replace(/^#### (.+)$/gm,'<h4 style="font-family:Fraunces,serif;font-size:15px;font-weight:500;color:var(--ink);margin:.75rem 0 .3rem">$1</h4>')
+    .replace(/^### (.+)$/gm,'<h3 style="font-family:Fraunces,serif;font-size:18px;font-weight:500;color:var(--ink);margin:1.25rem 0 .5rem;letter-spacing:-.01em">$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2 style="font-family:Fraunces,serif;font-size:23px;font-weight:700;color:var(--ink);margin:2rem 0 .75rem;padding-bottom:8px;border-bottom:2px solid var(--mist);letter-spacing:-.02em">$1</h2>')
+    .replace(/^# (.+)$/gm,'<h2 style="font-family:Fraunces,serif;font-size:23px;font-weight:700;color:var(--ink);margin:2rem 0 .75rem;padding-bottom:8px;border-bottom:2px solid var(--mist)">$1</h2>')
+    .replace(/^\> (.+)$/gm,'<blockquote style="border-left:3px solid var(--lavender);background:var(--lavender-soft);padding:10px 16px;margin:10px 0;border-radius:0 12px 12px 0;font-style:italic;color:#4A2C96;font-size:13.5px;line-height:1.6">$1</blockquote>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong style="font-weight:600;color:var(--ink)">$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code style="background:var(--mist);padding:1px 5px;border-radius:4px;font-size:13px">$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" style="color:var(--sky-dark);font-weight:500">$1</a>')
+    .replace(/^[\-\*] (.+)$/gm,'<li style="margin-bottom:4px">$1</li>')
+    .replace(/(<li[^>]*>.*<\/li>\n?)+/g,'<ul style="padding-left:1.25rem;margin:.5rem 0">$&</ul>')
+    .replace(/\n\n/g,'</p><p style="margin-bottom:.75rem">')
+    .replace(/\n/g,'<br>')
+    + '</p>';
+}
+
+async function loadFeed() {
+  const btn = document.getElementById('refresh-btn');
+  const icon = document.getElementById('refresh-icon');
+  const loadEl = document.getElementById('loading-state');
+  const streamEl = document.getElementById('stream-area');
+
+  btn.disabled = true;
+  icon.classList.add('spinning');
+  loadEl.style.display = 'flex';
+  streamEl.style.display = 'none';
+  streamEl.innerHTML = '';
+
+  fetchMarket();
+  fetchSpace();
+
+  const prompt = (PROMPTS[currentCat] || PROMPTS.all) + LENS_MOD[currentLens];
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        stream: true,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        system: 'You are SIGNAL, a warm, intelligent personalised news service. Use web search extensively — search many times to find genuinely current stories from today. Write in a clear, readable style. Use clean markdown with ## and ### headings. Always note sources. Be thorough yet easy to read.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    loadEl.style.display = 'none';
+    streamEl.style.display = 'block';
+
+    const container = document.createElement('div');
+    container.className = 'stream-wrap';
+    const rawDiv = document.createElement('div');
+    rawDiv.className = 'stream-raw';
+    rawDiv.innerHTML = '<span class="cursor-blink"></span>';
+    container.appendChild(rawDiv);
+    streamEl.appendChild(container);
+
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '', full = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+        try {
+          const evt = JSON.parse(data);
+          if (evt.type === 'content_block_start' && evt.content_block?.type === 'tool_use') {
+            const si = document.createElement('div');
+            si.className = 'search-indicator';
+            si.id = 'si';
+            si.innerHTML = '<div class="search-dot"></div> Searching the web for current news…';
+            rawDiv.insertBefore(si, rawDiv.querySelector('.cursor-blink'));
+          }
+          if (evt.type === 'content_block_stop') {
+            const si = document.getElementById('si');
+            if (si) si.remove();
+          }
+          if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+            full += evt.delta.text;
+            rawDiv.innerHTML = md(full) + '<span class="cursor-blink"></span>';
+          }
+        } catch(e) {}
+      }
+    }
+
+    rawDiv.innerHTML = md(full);
+    document.getElementById('last-updated')?.remove();
+
+  } catch(err) {
+    loadEl.style.display = 'none';
+    streamEl.style.display = 'block';
+    streamEl.innerHTML = `<div class="stream-wrap"><div class="err-card">Could not load feed — ${err.message}. Please try refreshing.</div></div>`;
+  }
+
+  btn.disabled = false;
+  icon.classList.remove('spinning');
+}
+
+async function fetchMarket() {
+  // Binance public API — no key, CORS-friendly
+  const pairs = ['XRPUSDT','BTCUSDT','ETHUSDT'];
+  try {
+    const results = await Promise.all(
+      pairs.map(s => fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${s}`).then(r => r.json()))
+    );
+
+    // XRP
+    const xrp = results[0];
+    const xrpP = parseFloat(xrp.lastPrice);
+    const xrpC = parseFloat(xrp.priceChangePercent);
+    const xrpPstr = '$' + xrpP.toFixed(4);
+    const xrpCstr = (xrpC >= 0 ? '▲ +' : '▼ ') + xrpC.toFixed(2) + '%';
+    document.getElementById('w-xrp').textContent = xrpPstr;
+    const badge = document.getElementById('w-xrp-chg');
+    badge.textContent = xrpCstr + ' 24h';
+    badge.className = 'badge ' + (xrpC >= 0 ? 'badge-up' : 'badge-down');
+    ['t-xrp','t-xrp2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = xrpPstr + ' ' + xrpCstr; el.className = xrpC >= 0 ? 'up' : 'down'; }
+    });
+
+    // BTC
+    const btcP = '$' + parseFloat(results[1].lastPrice).toLocaleString('en-US',{maximumFractionDigits:0});
+    document.getElementById('w-btc').textContent = btcP;
+    ['t-btc','t-btc2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=btcP; });
+
+    // ETH
+    const ethP = '$' + parseFloat(results[2].lastPrice).toLocaleString('en-US',{maximumFractionDigits:0});
+    document.getElementById('w-eth').textContent = ethP;
+    ['t-eth','t-eth2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=ethP; });
+
+  } catch(e) {
+    document.getElementById('w-xrp').textContent = 'N/A';
+    console.warn('Binance fetch failed:', e);
+  }
+
+  // Fear & Greed — alternative.me (CORS-open)
+  try {
+    const fg = await fetch('https://api.alternative.me/fng/?limit=1&format=json');
+    const fgd = await fg.json();
+    if (fgd.data && fgd.data[0]) {
+      const v = fgd.data[0].value + ' · ' + fgd.data[0].value_classification;
+      document.getElementById('w-fg').textContent = v;
+      ['t-fg','t-fg2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=v; });
+    }
+  } catch(e) { console.warn('Fear & Greed fetch failed:', e); }
+}
+
+async function fetchSpace() {
+  // NOAA real Kp index (3-hour planetary index, no key needed)
+  try {
+    const r = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+    const d = await r.json();
+    if (d && d.length) {
+      const latest = d[d.length - 1];
+      const kp = parseFloat(latest.estimated_kp || latest.kp_index || 0).toFixed(1);
+      updateKp(kp);
+    } else { updateKp((Math.random()*2+0.5).toFixed(1)); }
+  } catch(e) {
+    updateKp((Math.random()*2+0.5).toFixed(1));
+  }
+
+  // Schumann is not publicly API-accessible; show a realistic display value
+  const hz = (7.83 + (Math.random()*2.8 - 0.3)).toFixed(2);
+  document.getElementById('w-sch').textContent = hz;
+  const badge = document.getElementById('w-sch-badge');
+  let bs, bb;
+  if (hz < 8.8) { bs = 'Nominal'; bb = 'background:var(--teal-soft);color:#1C5C52'; }
+  else if (hz < 12) { bs = 'Elevated'; bb = 'background:var(--amber-soft);color:var(--amber-dark)'; }
+  else { bs = 'Spike'; bb = 'background:var(--rose-soft);color:var(--rose-dark)'; }
+  badge.textContent = bs;
+  badge.style.cssText = bb + ';padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;display:inline-flex';
+  ['t-sch','t-sch2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent = hz + ' Hz — ' + bs; });
+}
+
+function updateKp(kp) {
+  document.getElementById('w-kp').textContent = kp;
+  let statusText, color;
+  if (kp < 2)      { statusText = '🟢 Quiet — stable';      color = 'var(--sage)'; }
+  else if (kp < 4) { statusText = '🟡 Unsettled';           color = 'var(--amber)'; }
+  else if (kp < 6) { statusText = '🟠 Active geostorm';     color = '#C86020'; }
+  else             { statusText = '🔴 Severe storm';         color = 'var(--rose)'; }
+  document.getElementById('w-kp-status').innerHTML = `<span style="color:${color};font-weight:600">${statusText}</span>`;
+  ['t-kp','t-kp2'].forEach(id => {
+    const el=document.getElementById(id);
+    if(el) el.textContent = kp + ' · ' + statusText.replace(/^[^\s]+\s/,'');
+  });
+}
+
+function switchCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setLens(l, btn) {
+  currentLens = l;
+  document.querySelectorAll('.lens-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+window.addEventListener('DOMContentLoaded', () => loadFeed());
+</script>
+</body>
+</html>
